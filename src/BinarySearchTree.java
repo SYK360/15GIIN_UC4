@@ -1,24 +1,7 @@
 import java.util.*;
 
-//Clase BinarySearchTree
-//
-//
-//******************METODOS PUBLICOS*********************
-//void insert( x )       --> Inserta x
-//void remove( x )       --> Elimina x
-//void removeMin( )      --> Elimina el objeto con menor valor (clave)
-//Comparable find( x )   --> Devuelve el objeto del arbol igual a x
-//Comparable findMin( )  --> devuelve el objeto menor
-//Comparable findMax( )  --> devuelve el objeto mayor
-//boolean isEmpty( )     --> devuelve TRUE sii el arbol es vacio
-//void makeEmpty( )      --> elimina todos los nodos del arbol
+// Clase BinarySearchTree
 
-/**
- * Implementa Arbol Binario de Búsqueda
- * Como comparador por default es compareTo
- * Pero podemos pasarle un Comparator al momento
- * de crear el arbol
- */
 public class BinarySearchTree<AnyType extends Comparable<? super AnyType>> {
     private BinaryNode<AnyType> root;
     private Comparator<? super AnyType> cmp;
@@ -164,23 +147,71 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>> {
         return t;
     }
 
+    // Método para contar las hojas del árbol binario de búsqueda
+    public int contarHojas() {
+        return contarHojas(root);
+    }
+
+    // Método recursivo privado para contar las hojas
+    private int contarHojas(BinaryNode<AnyType> node) {
+        if (node == null) {
+            return 0;
+        }
+        if (node.left == null && node.right == null) {
+            return 1;
+        }
+        return contarHojas(node.left) + contarHojas(node.right);
+    }
+
+    // Método para contar el número de elementos menores estrictos que ELEMENTO
+    public int menoresQue(AnyType ELEMENTO) {
+        return menoresQue(ELEMENTO, root);
+    }
+
+    // Método recursivo privado para contar los elementos menores estrictos
+    private int menoresQue(AnyType ELEMENTO, BinaryNode<AnyType> node) {
+        if (node == null) {
+            return 0;
+        }
+
+        int count = 0;
+        int compareResult = myCompare(ELEMENTO, node.element);
+
+        if (compareResult > 0) {
+            // Si ELEMENTO es mayor que el valor del nodo, contamos este nodo y todos los de su subárbol izquierdo
+            count = 1 + contarNodos(node.left) + menoresQue(ELEMENTO, node.right);
+        } else {
+            // Si ELEMENTO es menor o igual al valor del nodo, seguimos buscando en el subárbol izquierdo
+            count = menoresQue(ELEMENTO, node.left);
+        }
+
+        return count;
+    }
+
+    // Método para contar todos los nodos en un subárbol
+    private int contarNodos(BinaryNode<AnyType> node) {
+        if (node == null) {
+            return 0;
+        }
+        return 1 + contarNodos(node.left) + contarNodos(node.right);
+    }
+
     // Método principal para probar la funcionalidad del árbol
     public static void main(String[] args) {
         BinarySearchTree<Integer> bst = new BinarySearchTree<>();
 
-        bst.insert(10);
-        bst.insert(5);
-        bst.insert(15);
+        bst.insert(6);
+        bst.insert(2);
+        bst.insert(8);
+        bst.insert(1);
+        bst.insert(4);
         bst.insert(3);
-        bst.insert(7);
-        bst.insert(12);
-        bst.insert(17);
 
-        System.out.println("Min: " + bst.findMin());
+        System.out.println("Número de hojas: " + bst.contarHojas());
         bst.removeMin();
-        System.out.println("Min after removing min: " + bst.findMin());
-        bst.remove(7);
-        System.out.println("Is 7 present? " + (bst.findMin() == 7 ? "Yes" : "No"));
-        System.out.println("Is the tree empty? " + bst.isEmpty());
+        System.out.println("Número de hojas después de eliminar el mínimo: " + bst.contarHojas());
+
+        int ELEMENTO = 4;
+        System.out.println("Número de elementos menores que " + ELEMENTO + ": " + bst.menoresQue(ELEMENTO));
     }
 }
