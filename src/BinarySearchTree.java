@@ -154,12 +154,15 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>> {
 
     // Método recursivo privado para contar las hojas
     private int contarHojas(BinaryNode<AnyType> node) {
+        // Si el nodo es null, no hay hojas en este subárbol
         if (node == null) {
             return 0;
         }
+        // Si el nodo no tiene hijos, es una hoja
         if (node.left == null && node.right == null) {
             return 1;
         }
+        // Suma las hojas de los subárboles izquierdo y derecho
         return contarHojas(node.left) + contarHojas(node.right);
     }
 
@@ -211,7 +214,7 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>> {
         bst.removeMin();
         System.out.println("Número de hojas después de eliminar el mínimo: " + bst.contarHojas());
 
-        int ELEMENTO = 4;
+        int ELEMENTO = 1;
         System.out.println("Número de elementos menores que " + ELEMENTO + ": " + bst.menoresQue(ELEMENTO));
     }
 }
